@@ -1,4 +1,4 @@
-package org.httpassembleapp.activismapp;
+package org.assembleapp.activismapp;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
