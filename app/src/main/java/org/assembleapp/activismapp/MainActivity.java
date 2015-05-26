@@ -10,10 +10,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 
 public class MainActivity extends ActionBarActivity {
+
+    private static final String ZIPCODE = "ZIPCODE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,19 +31,25 @@ public class MainActivity extends ActionBarActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-//        startActivity(intent);
-
-        View frame = (RelativeLayout) findViewById(R.id.main_layout);
-        frame.setOnClickListener(new View.OnClickListener() {
+        View goButton = (Button) findViewById(R.id.go_button);
+        goButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String zipcode = ((TextView) findViewById(R.id.zip_code)).getText().toString();
+                if (((CheckBox) findViewById(R.id.save_data_checkbox)).isChecked()) {
+                    saveSettings(zipcode);
+                }
                 final Intent intent = new Intent(getApplication(), EventListActivity.class);
+                intent.putExtra(ZIPCODE, zipcode);
                 startActivity(intent);
             }
         });
         return true;
     }
 
+    private void saveSettings(String zipcode) {
+        // TODO
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
