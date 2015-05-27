@@ -18,7 +18,8 @@ import android.widget.TextView;
 
 public class MainActivity extends ActionBarActivity {
 
-    private static final String ZIPCODE = "ZIPCODE";
+    public static final String ZIPCODE = "ZIPCODE";
+    public static final String CAUSES = "CAUSES";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

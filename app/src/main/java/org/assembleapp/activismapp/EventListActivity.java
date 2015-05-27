@@ -15,12 +15,12 @@ public class EventListActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_list);
-
-
-        WebView webView = (WebView) findViewById(R.id.webview);
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webView.loadUrl("http://www.assembleapp.org/events");
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.container, new EventsFromWebFragment())
+//                    .add(R.id.container, new EventsNativeListFragment())
+                    .commit();
+        }
     }
 
     @Override
