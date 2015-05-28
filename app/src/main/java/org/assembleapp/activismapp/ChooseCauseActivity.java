@@ -1,35 +1,45 @@
 package org.assembleapp.activismapp;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.widget.Toast;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.TextView;
 
-import org.assembleapp.activismapp.R;
 
-public class EventListActivity extends ActionBarActivity  {
+public class ChooseCauseActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_list);
+        setContentView(R.layout.activity_choose_cause);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new EventsFromWebFragment())
-//                    .add(R.id.container, new EventsNativeListFragment())
+                    .add(R.id.container, new CauseListFragment())
                     .commit();
         }
+
+        View goButton = (Button) findViewById(R.id.go_button);
+        goButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox) findViewById(R.id.save_data_checkbox)).isChecked()) {
+                    //saveSettings(zipcode);
+                }
+                Intent intent = new Intent(getApplication(), EventListActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_event_list, menu);
+        getMenuInflater().inflate(R.menu.menu_choose_cause, menu);
         return true;
     }
 
@@ -47,5 +57,4 @@ public class EventListActivity extends ActionBarActivity  {
 
         return super.onOptionsItemSelected(item);
     }
-
 }

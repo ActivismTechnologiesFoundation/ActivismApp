@@ -40,7 +40,8 @@ public class MainActivity extends ActionBarActivity {
                 if (((CheckBox) findViewById(R.id.save_data_checkbox)).isChecked()) {
                     saveSettings(zipcode);
                 }
-                final Intent intent = new Intent(getApplication(), EventListActivity.class);
+//                Intent intent = new Intent(getApplication(), EventListActivity.class);
+                Intent intent = new Intent(getApplication(), ChooseCauseActivity.class);
                 intent.putExtra(ZIPCODE, zipcode);
                 startActivity(intent);
             }
