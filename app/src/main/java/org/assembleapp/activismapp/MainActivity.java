@@ -1,18 +1,16 @@
 package org.assembleapp.activismapp;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.text.Layout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.RelativeLayout;
+import android.widget.EditText;
 import android.widget.TextView;
 
 
@@ -25,6 +23,11 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        String zipcode = sharedPref.getString(getString(R.string.pref_location_key), "98034");
+        ((EditText) findViewById(R.id.editText)).setText(zipcode);
+        //TODO: set to pull in stored zip code value
     }
 
     @Override
@@ -36,9 +39,9 @@ public class MainActivity extends ActionBarActivity {
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String zipcode = ((TextView) findViewById(R.id.zip_code)).getText().toString();
+                String zipcode = ((EditText) findViewById(R.id.editText)).getText().toString();
                 if (((CheckBox) findViewById(R.id.save_data_checkbox)).isChecked()) {
-                    saveSettings(zipcode);
+                    saveZipcode(zipcode);
                 }
 //                Intent intent = new Intent(getApplication(), EventListActivity.class);
                 Intent intent = new Intent(getApplication(), ChooseCauseActivity.class);
@@ -49,8 +52,11 @@ public class MainActivity extends ActionBarActivity {
         return true;
     }
 
-    private void saveSettings(String zipcode) {
-        // TODO
+    private void saveZipcode(String zipcode) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.pref_location_key), zipcode);
+        editor.commit();
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -61,10 +67,15 @@ public class MainActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            return launchActionSettings();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    protected boolean launchActionSettings() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+        return true;
+    }
 }

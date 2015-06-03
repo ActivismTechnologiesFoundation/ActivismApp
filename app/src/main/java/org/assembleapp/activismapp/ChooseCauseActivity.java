@@ -23,18 +23,30 @@ public class ChooseCauseActivity extends ActionBarActivity {
                     .commit();
         }
 
-        View goButton = (Button) findViewById(R.id.go_button);
+        Button goButton = (Button) findViewById(R.id.go_button);
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String causes = generateCausesString();
                 if (((CheckBox) findViewById(R.id.save_data_checkbox)).isChecked()) {
-                    //saveSettings(zipcode);
+                    saveCausesToSettings(causes);
                 }
                 Intent intent = new Intent(getApplication(), EventListActivity.class);
+                intent.putExtra(MainActivity.ZIPCODE,
+                        getIntent().getStringExtra(MainActivity.ZIPCODE));
+                intent.putExtra(MainActivity.CAUSES, causes);
                 startActivity(intent);
             }
         });
     }
+
+    private void saveCausesToSettings(String causes) {
+    }
+
+    private String generateCausesString() {
+        return "";
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
