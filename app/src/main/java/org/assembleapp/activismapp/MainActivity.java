@@ -1,5 +1,6 @@
 package org.assembleapp.activismapp;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -11,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -24,10 +24,10 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String zipcode = sharedPref.getString(getString(R.string.pref_location_key), "98034");
         ((EditText) findViewById(R.id.editText)).setText(zipcode);
-        //TODO: set to pull in stored zip code value
     }
 
     @Override

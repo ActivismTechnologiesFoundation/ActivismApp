@@ -64,9 +64,15 @@ public class ChooseCauseActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            return launchActionSettings();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    protected boolean launchActionSettings() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+        return true;
     }
 }

@@ -20,8 +20,8 @@ public class EventListActivity extends ActionBarActivity  {
         setContentView(R.layout.activity_event_list);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new EventsFromWebFragment())
-//                    .add(R.id.container, new EventsNativeListFragment())
+//                    .add(R.id.container, new EventsFromWebFragment())
+                    .add(R.id.container, new EventsNativeListFragment())
                     .commit();
         }
     }
