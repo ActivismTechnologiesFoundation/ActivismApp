@@ -25,9 +25,13 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
 
+        setPreferences();
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         String zipcode = sharedPref.getString(getString(R.string.pref_location_key), "98034");
         ((EditText) findViewById(R.id.editText)).setText(zipcode);
+    }
+
+    private void setPreferences() {
     }
 
     @Override

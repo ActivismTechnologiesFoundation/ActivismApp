@@ -1,19 +1,26 @@
 package org.assembleapp.activismapp;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
 
 import org.assembleapp.activismapp.dummy.DummyContent;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * A fragment representing a list of Items.
@@ -71,9 +78,8 @@ public class CauseListFragment extends Fragment implements AbsListView.OnItemCli
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        // TODO: Change Adapter to display your content
-        mAdapter = new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-                android.R.layout.simple_list_item_1, android.R.id.text1, DummyContent.ITEMS);
+        String[] causes = getResources().getStringArray(R.array.cause_entries);
+        mAdapter = new CauseEntryAdapter(getActivity(), Arrays.asList(causes));
     }
 
     @Override
@@ -119,4 +125,22 @@ public class CauseListFragment extends Fragment implements AbsListView.OnItemCli
     }
 
 
+    private class CauseEntryAdapter extends ArrayAdapter {
+        public CauseEntryAdapter(Context context, List<String> causes) {
+            super(context, 0, causes);
+        }
+
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            String cause = (String) getItem(position);
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.cause_list_item, parent, false);
+
+            }
+            CheckBox checkbox = (CheckBox) convertView.findViewById(R.id.cause_checkbox);
+            checkbox.setText(cause);
+
+            return convertView;
+        }
+    }
 }

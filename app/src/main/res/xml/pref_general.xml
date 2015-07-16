@@ -8,4 +8,11 @@
         android:inputType="text"
         android:singleLine="true" />
 
+    <MultiSelectListPreference
+        android:key="@string/cause_list_key"
+        android:title="@string/cause_list_title"
+        android:entries="@array/cause_entries"
+        android:entryValues="@array/cause_values"
+        />
+
 </PreferenceScreen>

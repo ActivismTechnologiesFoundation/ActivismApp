@@ -33,6 +33,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="MainActivity" />
         </activity>
+        <activity
+            android:name=".EventDetailsActivity"
+            android:label="@string/title_activity_event_details_fragment" >
+        </activity>
     </application>
 
 </manifest>

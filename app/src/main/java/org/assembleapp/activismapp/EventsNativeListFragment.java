@@ -1,6 +1,7 @@
 package org.assembleapp.activismapp;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import org.assembleapp.activismapp.dummy.DummyContent;
@@ -107,6 +109,21 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
 
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent launchIntent = new Intent(getActivity(), EventDetailsActivity.class);
+                launchIntent.putExtra("EVENT", ((AssembleEvent) EventList.get(position)).getJson().toString());
+                if (launchIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    startActivity(launchIntent);
+                }
+                else {
+                    Toast.makeText(getActivity().getApplicationContext(), "bark", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
         return view;
     }
 
@@ -118,7 +135,10 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
     }
 
     public static class AssembleEvent {
+        private static final String NAME = "name";
+        private static final String DESCRIPTION = "description";
         String message = "whoo hoo";
+        JSONObject json = null;
 
         public AssembleEvent() {}
 
@@ -127,11 +147,38 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
         }
 
         public AssembleEvent(JSONObject json) {
-            this.message = json.toString();
+
+            this.json = json;
         }
 
         public String toString() {
-            return message;
+            String ret = "";
+
+            try {
+                ret += json.getString(NAME);
+                ret += "\n\n\n\n";
+                ret += json.get(DESCRIPTION);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return "ERROR PROCESSING JSON";
+            }
+
+            return ret;
+        }
+
+        public URL getUrl() {
+            try {
+                return new URL(json.getString("url"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        public JSONObject getJson() {
+            return json;
         }
     }
 
@@ -221,9 +268,8 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
             JSONArray eventsJson = null;
             try {
                 eventsJson = new JSONArray(result);
-                //JSONArray eventArray = eventsJson.getJSONArray("main");
                 for(int i = 0; i < eventsJson.length(); i++) {
-                    events.add(new AssembleEvent(eventsJson.get(i).toString()));
+                    events.add(new AssembleEvent((JSONObject) eventsJson.get(i)));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

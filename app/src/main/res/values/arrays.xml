@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cause_entries">
+        <item>Political</item>
+        <item>Social</item>
+    </string-array>
+    <string-array name="cause_values">
+        <item>political</item>
+        <item>social</item>
+    </string-array>
+</resources>
