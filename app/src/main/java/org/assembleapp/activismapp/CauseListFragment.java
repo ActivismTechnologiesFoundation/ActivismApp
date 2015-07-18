@@ -2,7 +2,9 @@ package org.assembleapp.activismapp;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
@@ -20,7 +22,10 @@ import org.assembleapp.activismapp.dummy.DummyContent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * A fragment representing a list of Items.
@@ -78,8 +83,13 @@ public class CauseListFragment extends Fragment implements AbsListView.OnItemCli
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        String[] causes = getResources().getStringArray(R.array.cause_entries);
-        mAdapter = new CauseEntryAdapter(getActivity(), Arrays.asList(causes));
+        String[] availableCauseKeys = getResources().getStringArray(R.array.cause_values);
+        String[] availableCauseLabels = getResources().getStringArray(R.array.cause_entries);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        Set<String> selectedCausesSet = sharedPref.getStringSet(getString(R.string.cause_list_key), Collections.<String>emptySet());
+        List<String> selectedCauses = Arrays.asList(selectedCausesSet.toArray(new String[0]));
+
+        mAdapter = new CauseEntryAdapter(getActivity(), Arrays.asList(availableCauseLabels), Arrays.asList(availableCauseKeys), selectedCauses);
     }
 
     @Override
@@ -126,8 +136,18 @@ public class CauseListFragment extends Fragment implements AbsListView.OnItemCli
 
 
     private class CauseEntryAdapter extends ArrayAdapter {
-        public CauseEntryAdapter(Context context, List<String> causes) {
-            super(context, 0, causes);
+        List<String> selectedCauseKeys;
+        List<String> availableCauseKeys;
+        List<String> selectedCauseLabels;
+
+        public CauseEntryAdapter(Context context, List<String> causeLabels, List<String> availableCauseKeys, List<String> selectedCauseKeys) {
+            super(context, 0, causeLabels);
+            if (selectedCauseKeys != null)
+                this.selectedCauseKeys = selectedCauseKeys;
+            else
+                this.selectedCauseKeys = new LinkedList<>();
+
+            this.availableCauseKeys = availableCauseKeys;
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -139,6 +159,7 @@ public class CauseListFragment extends Fragment implements AbsListView.OnItemCli
             }
             CheckBox checkbox = (CheckBox) convertView.findViewById(R.id.cause_checkbox);
             checkbox.setText(cause);
+            checkbox.setChecked(selectedCauseKeys.contains(availableCauseKeys.get(position)));
 
             return convertView;
         }

@@ -41,9 +41,12 @@ public class ChooseCauseActivity extends ActionBarActivity {
     }
 
     private void saveCausesToSettings(String causes) {
+        //TODO
     }
 
     private String generateCausesString() {
+        //TODO
+
         return "";
     }
 
