@@ -1,6 +1,10 @@
 package org.assembleapp.activismapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.MultiSelectListPreference;
+import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,6 +13,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 public class ChooseCauseActivity extends ActionBarActivity {
@@ -27,27 +37,32 @@ public class ChooseCauseActivity extends ActionBarActivity {
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String causes = generateCausesString();
+                List<String> causes = generateCausesString();
                 if (((CheckBox) findViewById(R.id.save_data_checkbox)).isChecked()) {
                     saveCausesToSettings(causes);
                 }
                 Intent intent = new Intent(getApplication(), EventListActivity.class);
                 intent.putExtra(MainActivity.ZIPCODE,
                         getIntent().getStringExtra(MainActivity.ZIPCODE));
-                intent.putExtra(MainActivity.CAUSES, causes);
+                intent.putExtra(MainActivity.CAUSES, causes.toArray());
                 startActivity(intent);
             }
         });
     }
 
-    private void saveCausesToSettings(String causes) {
-        //TODO
+    private void saveCausesToSettings(List<String> causes) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putStringSet(getString(R.string.cause_list_key), new HashSet(causes));
+        editor.commit();
     }
 
-    private String generateCausesString() {
-        //TODO
+    private List<String> generateCausesString() {
+        //CheckBox checkbox = (CheckBox) convertView.findViewById(R.id.cause_checkbox);
+        FragmentManager fragmentManager = getSupportFragmentManager();
 
-        return "";
+        CauseListFragment causeListFragment = (CauseListFragment) fragmentManager.getFragments().get(0);
+        return causeListFragment.getCheckedCauses();
     }
 
 

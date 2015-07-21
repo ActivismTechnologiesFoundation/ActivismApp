@@ -14,8 +14,10 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import org.assembleapp.activismapp.dummy.DummyContent;
@@ -36,16 +38,6 @@ import java.util.Set;
  */
 public class CauseListFragment extends Fragment implements AbsListView.OnItemClickListener {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-
     /**
      * The fragment's ListView/GridView.
      */
@@ -61,8 +53,6 @@ public class CauseListFragment extends Fragment implements AbsListView.OnItemCli
     public static CauseListFragment newInstance(String param1, String param2) {
         CauseListFragment fragment = new CauseListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -78,18 +68,21 @@ public class CauseListFragment extends Fragment implements AbsListView.OnItemCli
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+
+//        mAdapter = new CauseEntryAdapter(getActivity(), Arrays.asList(availableCauseLabels), Arrays.asList(availableCauseKeys), selectedCauses);
+        mAdapter = new CauseEntryAdapter(getActivity(), getCauseListFromPreferences());
+    }
+
+    public List<String> getCheckedCauses() {
+        List<String> ret = new LinkedList<String>();
+
+        for(int i = 0; i < mAdapter.getCount(); i++) {
+            CauseListEntry cause = (CauseListEntry) mAdapter.getItem(i);
+            if(cause.isChecked()) {
+                ret.add(cause.getKey());
+            }
         }
-
-        String[] availableCauseKeys = getResources().getStringArray(R.array.cause_values);
-        String[] availableCauseLabels = getResources().getStringArray(R.array.cause_entries);
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        Set<String> selectedCausesSet = sharedPref.getStringSet(getString(R.string.cause_list_key), Collections.<String>emptySet());
-        List<String> selectedCauses = Arrays.asList(selectedCausesSet.toArray(new String[0]));
-
-        mAdapter = new CauseEntryAdapter(getActivity(), Arrays.asList(availableCauseLabels), Arrays.asList(availableCauseKeys), selectedCauses);
+        return ret;
     }
 
     @Override
@@ -102,7 +95,15 @@ public class CauseListFragment extends Fragment implements AbsListView.OnItemCli
         ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
         // Set OnItemClickListener so we can be notified on item clicks
-        mListView.setOnItemClickListener(this);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CauseListEntry cause = (CauseListEntry) mAdapter.getItem(position);
+                cause.setChecked(!cause.isChecked());
+            }
+
+        });
 
         return view;
     }
@@ -119,6 +120,7 @@ public class CauseListFragment extends Fragment implements AbsListView.OnItemCli
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(getActivity().getApplicationContext(), "foo", Toast.LENGTH_SHORT);
     }
 
     /**
@@ -134,32 +136,86 @@ public class CauseListFragment extends Fragment implements AbsListView.OnItemCli
         }
     }
 
+    private List<CauseListEntry> getCauseListFromPreferences() {
+        List<CauseListEntry> ret = new LinkedList<>();
+
+        String[] availableCauseKeys = getResources().getStringArray(R.array.cause_values);
+        String[] availableCauseLabels = getResources().getStringArray(R.array.cause_entries);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        Set<String> selectedCausesSet = sharedPref.getStringSet(getString(R.string.cause_list_key), Collections.<String>emptySet());
+        List<String> selectedCauses = Arrays.asList(selectedCausesSet.toArray(new String[0]));
+
+        for(int i = 0; i < availableCauseLabels.length; i++) {
+            ret.add(new CauseListEntry(availableCauseKeys[i], availableCauseLabels[i], selectedCausesSet.contains(availableCauseKeys[i])));
+        }
+
+
+        return ret;
+    }
+    private class CauseListEntry {
+        protected String key;
+        protected String label;
+        protected boolean checked;
+
+        public CauseListEntry(String key, String label, boolean checked) {
+            this.key = key;
+            this.label = label;
+            this.checked = checked;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+
+        public boolean isChecked() {
+            return checked;
+        }
+
+        public void setChecked(boolean checked) {
+            this.checked = checked;
+        }
+    }
+
 
     private class CauseEntryAdapter extends ArrayAdapter {
-        List<String> selectedCauseKeys;
-        List<String> availableCauseKeys;
-        List<String> selectedCauseLabels;
-
-        public CauseEntryAdapter(Context context, List<String> causeLabels, List<String> availableCauseKeys, List<String> selectedCauseKeys) {
-            super(context, 0, causeLabels);
-            if (selectedCauseKeys != null)
-                this.selectedCauseKeys = selectedCauseKeys;
-            else
-                this.selectedCauseKeys = new LinkedList<>();
-
-            this.availableCauseKeys = availableCauseKeys;
+        public CauseEntryAdapter(Context context, List<CauseListEntry> causes) {
+            super(context, 0, causes);
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
-
-            String cause = (String) getItem(position);
+            final CauseListEntry cause = (CauseListEntry) getItem(position);
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.cause_list_item, parent, false);
-
             }
             CheckBox checkbox = (CheckBox) convertView.findViewById(R.id.cause_checkbox);
-            checkbox.setText(cause);
-            checkbox.setChecked(selectedCauseKeys.contains(availableCauseKeys.get(position)));
+            checkbox.setText(cause.getLabel());
+            checkbox.setChecked(cause.isChecked());
+
+            checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (buttonView.isChecked()) {
+                        cause.setChecked(true);
+                    }
+                    else {
+                        cause.setChecked(false);
+                    }
+
+                }
+            });
 
             return convertView;
         }
