@@ -58,10 +58,7 @@ public class ChooseCauseActivity extends ActionBarActivity {
     }
 
     private List<String> generateCausesString() {
-        //CheckBox checkbox = (CheckBox) convertView.findViewById(R.id.cause_checkbox);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-
-        CauseListFragment causeListFragment = (CauseListFragment) fragmentManager.getFragments().get(0);
+        CauseListFragment causeListFragment = (CauseListFragment) getSupportFragmentManager().getFragments().get(0);
         return causeListFragment.getCheckedCauses();
     }
 

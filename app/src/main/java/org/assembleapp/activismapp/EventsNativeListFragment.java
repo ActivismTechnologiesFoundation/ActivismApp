@@ -46,9 +46,25 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
 
     private static final String LOG_TAG = EventsNativeListFragment.class.getSimpleName();
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    public String getZipcode() {
+        return zipcode;
+    }
+
+    public void setZipcode(String zipcode) {
+        this.zipcode = zipcode;
+    }
+
+    private String zipcode;
+
+    public String[] getCauses() {
+        return causes;
+    }
+
+    public void setCauses(String[] causes) {
+        this.causes = causes;
+    }
+
+    private String[] causes;
 
 
     /**
@@ -63,12 +79,12 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
     private ArrayAdapter mAdapter;
 
     // TODO: Rename and change types of parameters
-    public static EventsNativeListFragment newInstance(String zipcode, String causes) {
+    public static EventsNativeListFragment newInstance(String zipcode, String[] causes) {
         EventsNativeListFragment fragment = new EventsNativeListFragment();
-        Bundle args = new Bundle();
-        args.putString(MainActivity.ZIPCODE, zipcode);
-        args.putString(MainActivity.CAUSES, causes);
-        fragment.setArguments(args);
+        fragment.setCauses(causes);
+        fragment.setZipcode(zipcode);
+
+
         return fragment;
     }
 
@@ -84,14 +100,9 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
-
         FetchEventsTask task = new FetchEventsTask();
-        task.execute("loc", "pref"); // TODO(elvan): add location and event params
+        task.execute(zipcode,
+                     causes);
         // TODO: Change Adapter to display your content
         mAdapter = new ArrayAdapter<AssembleEvent>(getActivity(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, EventList);
@@ -187,7 +198,7 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
         @Override
         protected Object doInBackground(Object[] params) {
 
-            if(params.length == 0) {
+            if(params.length < 2) {
                 return null;
             }
 
@@ -201,7 +212,7 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
                 // Construct the URL for the OpenWeatherMap query
                 // Possible parameters are avaiable at OWM's forecast API page, at
                 // http://openweathermap.org/API#forecast
-                URL url = buildUrl((String) params[0]); // get user location preference?
+                URL url = buildUrl((String) params[0], (String[]) params[1]); // get user location preference?
 
                 // Create the request to OpenWeatherMap, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -278,7 +289,7 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
         }
 
 
-        private URL buildUrl(String location) {
+        private URL buildUrl(String location, String[] causes) {
 //            Uri.Builder builder = new Uri.Builder();
 //            builder.scheme("http");
 //            builder.authority("api.openweathermap.org");

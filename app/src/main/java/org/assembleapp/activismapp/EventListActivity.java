@@ -1,5 +1,6 @@
 package org.assembleapp.activismapp;
 
+import android.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -19,9 +20,12 @@ public class EventListActivity extends ActionBarActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_list);
         if (savedInstanceState == null) {
+            EventsNativeListFragment fragment = EventsNativeListFragment.newInstance(
+                    getIntent().getStringExtra(MainActivity.ZIPCODE),
+                    getIntent().getStringArrayExtra(MainActivity.CAUSES));
+
             getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.container, new EventsFromWebFragment())
-                    .add(R.id.container, new EventsNativeListFragment())
+                    .add(R.id.container, fragment)
                     .commit();
         }
     }
