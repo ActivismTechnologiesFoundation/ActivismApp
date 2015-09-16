@@ -79,9 +79,9 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
     private ArrayAdapter mAdapter;
 
     // TODO: Rename and change types of parameters
-    public static EventsNativeListFragment newInstance(String zipcode, String[] causes) {
+    public static EventsNativeListFragment newInstance(String zipcode, ArrayList<String> causes) {
         EventsNativeListFragment fragment = new EventsNativeListFragment();
-        fragment.setCauses(causes);
+        fragment.setCauses(causes.toArray(new String[causes.size()]));
         fragment.setZipcode(zipcode);
 
 

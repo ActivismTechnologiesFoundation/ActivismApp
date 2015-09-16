@@ -37,14 +37,17 @@ public class ChooseCauseActivity extends ActionBarActivity {
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<String> causes = generateCausesString();
+                ArrayList<String> causes = generateCausesString();
                 if (((CheckBox) findViewById(R.id.save_data_checkbox)).isChecked()) {
                     saveCausesToSettings(causes);
                 }
                 Intent intent = new Intent(getApplication(), EventListActivity.class);
                 intent.putExtra(MainActivity.ZIPCODE,
                         getIntent().getStringExtra(MainActivity.ZIPCODE));
-                intent.putExtra(MainActivity.CAUSES, causes.toArray());
+                intent.putStringArrayListExtra(MainActivity.CAUSES, causes);
+                //String[] bar = causes.toArray();
+                ArrayList<String> foo = intent.getStringArrayListExtra(MainActivity.CAUSES);
+                Set<String> keys = intent.getExtras().keySet();
                 startActivity(intent);
             }
         });
@@ -57,9 +60,9 @@ public class ChooseCauseActivity extends ActionBarActivity {
         editor.commit();
     }
 
-    private List<String> generateCausesString() {
+    private ArrayList<String> generateCausesString() {
         CauseListFragment causeListFragment = (CauseListFragment) getSupportFragmentManager().getFragments().get(0);
-        return causeListFragment.getCheckedCauses();
+        return new ArrayList<String>(causeListFragment.getCheckedCauses());
     }
 
 

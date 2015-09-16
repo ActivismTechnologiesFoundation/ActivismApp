@@ -22,7 +22,7 @@ public class EventListActivity extends ActionBarActivity  {
         if (savedInstanceState == null) {
             EventsNativeListFragment fragment = EventsNativeListFragment.newInstance(
                     getIntent().getStringExtra(MainActivity.ZIPCODE),
-                    getIntent().getStringArrayExtra(MainActivity.CAUSES));
+                    getIntent().getStringArrayListExtra(MainActivity.CAUSES));
 
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, fragment)
