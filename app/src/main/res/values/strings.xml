@@ -19,4 +19,7 @@
     <string name="title_activity_event_details_fragment">EventDetailsActivity</string>
     <string name="cause_list_key">cause_list_key</string>
     <string name="cause_list_title">Causes</string>
+    <string name="name">name</string>
+    <string name="event_name">event_name</string>
+    <string name="event_zip">event_zip</string>
 </resources>

@@ -1,11 +1,13 @@
 package org.assembleapp.activismapp;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -104,7 +108,7 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
         task.execute(zipcode,
                      causes);
         // TODO: Change Adapter to display your content
-        mAdapter = new ArrayAdapter<AssembleEvent>(getActivity(),
+        mAdapter = new EventListAdapter(getActivity(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, EventList);
     }
 
@@ -148,6 +152,8 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
     public static class AssembleEvent {
         private static final String NAME = "name";
         private static final String DESCRIPTION = "description";
+        private static final String ZIPCODE = "zipcode";
+        private static final String ADDRESS = "address";
         String message = "whoo hoo";
         JSONObject json = null;
 
@@ -175,6 +181,25 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
             }
 
             return ret;
+        }
+
+        public String getName() {
+            try {
+                return json.getString(NAME);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return "ERROR";
+            }
+        }
+
+        public String getZipcode() {
+            try {
+                JSONObject arr = json.getJSONObject(ADDRESS);
+                return arr.getString(ZIPCODE);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return "ERROR";
+            }
         }
 
         public URL getUrl() {
@@ -280,6 +305,7 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
             try {
                 eventsJson = new JSONArray(result);
                 for(int i = 0; i < eventsJson.length(); i++) {
+                    // TODO cleanup validate
                     events.add(new AssembleEvent((JSONObject) eventsJson.get(i)));
                 }
             } catch (JSONException e) {
@@ -290,27 +316,41 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
 
 
         private URL buildUrl(String location, String[] causes) {
-//            Uri.Builder builder = new Uri.Builder();
-//            builder.scheme("http");
-//            builder.authority("api.openweathermap.org");
-//            builder.path("data/2.5/forecast/daily?");
-//            builder.appendQueryParameter("q", location);
-//            builder.appendQueryParameter("mode", "json");
-//            builder.appendQueryParameter("units", "metric");
-//            builder.appendQueryParameter("cnt", "7");
-//
-//            try {
-//                return new URL(builder.build().toString());
-//            } catch (MalformedURLException e) {
-//                e.printStackTrace();
-//                return null;
-//            }
+            //TODO use location and cause
             try {
                 return new URL("http://www.assembleapp.org/api/events");
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 return null;
             }
+        }
+    }
+
+    private class EventListAdapter extends ArrayAdapter {
+
+        public EventListAdapter(Context context, List<AssembleEvent> causes) {
+            super(context, 0, causes);
+        }
+
+        public EventListAdapter(FragmentActivity activity, int simple_list_item_1, int text1, List<AssembleEvent> eventList) {
+            super(activity, simple_list_item_1, text1, eventList);
+        }
+
+        public View getView(int position, View convertView, ViewGroup parent) {
+            // TODO beautify
+            final AssembleEvent event = (AssembleEvent) getItem(position);
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.event_list_item, parent, false);
+            }
+
+            TextView text = (TextView) convertView.findViewById(R.id.event_name);
+            text.setText(event.getName());
+
+            text = (TextView) convertView.findViewById(R.id.event_zip);
+            text.setText(event.getZipcode());
+
+
+            return convertView;
         }
     }
 }
