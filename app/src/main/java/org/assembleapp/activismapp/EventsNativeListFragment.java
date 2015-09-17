@@ -1,9 +1,7 @@
 package org.assembleapp.activismapp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,14 +13,11 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
-import org.assembleapp.activismapp.dummy.DummyContent;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,11 +26,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -49,6 +44,7 @@ import java.util.List;
 public class EventsNativeListFragment extends Fragment implements AbsListView.OnItemClickListener {
 
     private static final String LOG_TAG = EventsNativeListFragment.class.getSimpleName();
+    public static final String EVENT = "EVENT";
 
     public String getZipcode() {
         return zipcode;
@@ -129,7 +125,7 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Intent launchIntent = new Intent(getActivity(), EventDetailsActivity.class);
-                launchIntent.putExtra("EVENT", ((AssembleEvent) EventList.get(position)).getJson().toString());
+                launchIntent.putExtra(EVENT, ((AssembleEvent) EventList.get(position)).getJson().toString());
                 if (launchIntent.resolveActivity(getActivity().getPackageManager()) != null) {
                     startActivity(launchIntent);
                 }
@@ -154,17 +150,17 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
         private static final String DESCRIPTION = "description";
         private static final String ZIPCODE = "zipcode";
         private static final String ADDRESS = "address";
-        String message = "whoo hoo";
+        String xml = "whoo hoo";
         JSONObject json = null;
 
         public AssembleEvent() {}
 
-        public AssembleEvent(String message) {
-            this.message = message;
+        public AssembleEvent(String xml) throws JSONException {
+            this.xml = xml;
+            json = new JSONObject(xml);
         }
 
         public AssembleEvent(JSONObject json) {
-
             this.json = json;
         }
 
@@ -297,22 +293,6 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
             mAdapter.addAll(events);
         }
 
-        private ArrayList<AssembleEvent> generateEventsFromJson(String result) {
-            ArrayList<AssembleEvent> events = new ArrayList<AssembleEvent>();
-
-
-            JSONArray eventsJson = null;
-            try {
-                eventsJson = new JSONArray(result);
-                for(int i = 0; i < eventsJson.length(); i++) {
-                    // TODO cleanup validate
-                    events.add(new AssembleEvent((JSONObject) eventsJson.get(i)));
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return events;
-        }
 
 
         private URL buildUrl(String location, String[] causes) {
@@ -324,6 +304,23 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
                 return null;
             }
         }
+    }
+
+    protected ArrayList<AssembleEvent> generateEventsFromJson(String result) {
+        ArrayList<AssembleEvent> events = new ArrayList<AssembleEvent>();
+
+
+        JSONArray eventsJson = null;
+        try {
+            eventsJson = new JSONArray(result);
+            for(int i = 0; i < eventsJson.length(); i++) {
+                // TODO cleanup validate
+                events.add(new AssembleEvent((JSONObject) eventsJson.get(i)));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return events;
     }
 
     private class EventListAdapter extends ArrayAdapter {
