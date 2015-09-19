@@ -78,12 +78,10 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
      */
     private ArrayAdapter mAdapter;
 
-    // TODO: Rename and change types of parameters
     public static EventsNativeListFragment newInstance(String zipcode, ArrayList<String> causes) {
         EventsNativeListFragment fragment = new EventsNativeListFragment();
         fragment.setCauses(causes.toArray(new String[causes.size()]));
         fragment.setZipcode(zipcode);
-
 
         return fragment;
     }
@@ -101,9 +99,7 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FetchEventsTask task = new FetchEventsTask();
-        task.execute(zipcode,
-                     causes);
-        // TODO: Change Adapter to display your content
+        task.execute(zipcode, causes);
         mAdapter = new EventListAdapter(getActivity(),
                 android.R.layout.simple_list_item_1, android.R.id.text1, EventList);
     }
@@ -115,7 +111,7 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
 
         // Set the adapter
         mListView = (AbsListView) view.findViewById(android.R.id.list);
-        ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
+        mListView.setAdapter(mAdapter);
 
         // Set OnItemClickListener so we can be notified on item clicks
         mListView.setOnItemClickListener(this);
@@ -125,12 +121,15 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Intent launchIntent = new Intent(getActivity(), EventDetailsActivity.class);
-                launchIntent.putExtra(EVENT, ((AssembleEvent) EventList.get(position)).getJson().toString());
+                launchIntent.putExtra(EVENT, ((AssembleEvent) EventList.get(position)).getXml());
                 if (launchIntent.resolveActivity(getActivity().getPackageManager()) != null) {
                     startActivity(launchIntent);
                 }
                 else {
-                    Toast.makeText(getActivity().getApplicationContext(), "bark", Toast.LENGTH_SHORT).show();
+                    Log.e(LOG_TAG, "Error: unable to launch detail page");
+                    Log.e(LOG_TAG, "Event number: " + position);
+                    Toast.makeText(getActivity().getApplicationContext(),
+                                   "Unable to open event", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -150,13 +149,9 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
         private static final String DESCRIPTION = "description";
         private static final String ZIPCODE = "zipcode";
         private static final String ADDRESS = "address";
-        String xml = "whoo hoo";
         JSONObject json = null;
 
-        public AssembleEvent() {}
-
         public AssembleEvent(String xml) throws JSONException {
-            this.xml = xml;
             json = new JSONObject(xml);
         }
 
@@ -178,6 +173,10 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
 
             return ret;
         }
+        public String getXml() {
+            return json.toString();
+        }
+
 
         public String getName() {
             try {

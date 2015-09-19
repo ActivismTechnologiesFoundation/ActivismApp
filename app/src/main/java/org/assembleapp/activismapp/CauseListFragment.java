@@ -68,8 +68,6 @@ public class CauseListFragment extends Fragment implements AbsListView.OnItemCli
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
-//        mAdapter = new CauseEntryAdapter(getActivity(), Arrays.asList(availableCauseLabels), Arrays.asList(availableCauseKeys), selectedCauses);
         mAdapter = new CauseEntryAdapter(getActivity(), getCauseListFromPreferences());
     }
 
