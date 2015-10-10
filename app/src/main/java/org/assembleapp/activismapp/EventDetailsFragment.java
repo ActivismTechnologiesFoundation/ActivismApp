@@ -9,9 +9,6 @@ import android.widget.TextView;
 
 import org.json.JSONException;
 
-/**
- * A placeholder fragment containing a simple view.
- */
 public class EventDetailsFragment extends Fragment {
 
     EventsNativeListFragment.AssembleEvent event;

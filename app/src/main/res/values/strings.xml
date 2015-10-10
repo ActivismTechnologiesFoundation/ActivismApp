@@ -22,4 +22,7 @@
     <string name="name">name</string>
     <string name="event_name">event_name</string>
     <string name="event_zip">event_zip</string>
+    <string name="title">Assemble</string>
+    <string name="assemble_description">Assemble lets you find activism events in your area.</string>
+    <string name="enter_location">Browse All</string>
 </resources>
