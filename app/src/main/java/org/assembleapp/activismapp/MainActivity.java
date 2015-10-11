@@ -43,16 +43,26 @@ public class MainActivity extends ActionBarActivity {
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(getApplication(), ChooseCauseActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        View searchByZipImage = findViewById(R.id.imageButton);
+        searchByZipImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 String zipcode = ((EditText) findViewById(R.id.editText)).getText().toString();
                 if (((CheckBox) findViewById(R.id.save_data_checkbox)).isChecked()) {
                     saveZipcode(zipcode);
                 }
-//                Intent intent = new Intent(getApplication(), EventListActivity.class);
                 Intent intent = new Intent(getApplication(), ChooseCauseActivity.class);
                 intent.putExtra(ZIPCODE, zipcode);
                 startActivity(intent);
             }
         });
+
+
         return true;
     }
 
