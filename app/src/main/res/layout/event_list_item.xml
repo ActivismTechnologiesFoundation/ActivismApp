@@ -1,14 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@drawable/event_list_shape">
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="15px"
+    android:layout_marginBottom="30px"
+    android:layout_marginRight="30px">
 
     <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:id="@+id/event_name" />
+        android:id="@+id/event_name"
+        android:textSize="13pt"
+        android:text="Sample"
+        android:textColor="@color/background_orange"/>
 
     <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:id="@+id/event_zip" />
+        android:id="@+id/date_time"
+        android:text="12:00, 1/1/11"
+        android:textColor="@color/background_orange"
+        android:layout_below="@id/event_name"/>
 
 
+    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
+        android:id="@+id/event_zip"
+        android:layout_below="@id/date_time"
+        android:text="00000"
+        android:textColor="@color/background_orange"/>
+
+    <ImageView
+        android:layout_width="100px"
+        android:layout_height="100px"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/expand_arrow"/>
+
+</RelativeLayout>
 
 </LinearLayout>
