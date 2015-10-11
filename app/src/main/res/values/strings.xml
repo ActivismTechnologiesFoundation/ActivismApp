@@ -25,4 +25,5 @@
     <string name="title">Assemble</string>
     <string name="assemble_description">Assemble lets you find activism events in your area.</string>
     <string name="enter_location">Browse All</string>
+    <string name="choose_cause_title">Issues</string>
 </resources>

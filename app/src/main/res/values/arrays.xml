@@ -1,11 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="cause_entries">
-        <item>Political</item>
-        <item>Social</item>
+        <item>Animal Rights</item>
+        <item>Arts &amp; Culture</item>
+        <item>Civil Liberties</item>
+        <item>Corruption</item>
+        <item>Crime &amp; Punishment</item>
+        <item>Economics</item>
+        <item>Education</item>
+        <item>Electroal Politics</item>
+        <item>Environment</item>
+        <item>Foreign Affairs</item>
+        <item>Gender</item>
+        <item>Guns</item>
+        <item>Health Care</item>
+        <item>Human Rights</item>
+        <item>Immigration</item>
+        <item>LGBTQ</item>
+        <item>Race</item>
+        <item>Religion</item>
+        <item>Science &amp; Technology</item>
+        <item>Veterans</item>
     </string-array>
     <string-array name="cause_values">
+        <item>animal_rights</item>
+        <item>arts_and_culture</item>
+        <item>civil_liberties</item>
         <item>political</item>
-        <item>social</item>
+        <item>corruption</item>
+        <item>crime &amp; Punishment</item>
+        <item>economics</item>
+        <item>education</item>
+        <item>electroal_politics</item>
+        <item>environment</item>
+        <item>foreign_affairs</item>
+        <item>gender</item>
+        <item>guns</item>
+        <item>health_care</item>
+        <item>human_rights</item>
+        <item>immigration</item>
+        <item>lgbtq</item>
+        <item>race</item>
+        <item>religion</item>
+        <item>science_and_technology</item>
+        <item>veterans</item>
     </string-array>
 </resources>

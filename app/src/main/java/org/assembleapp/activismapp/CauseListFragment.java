@@ -1,28 +1,25 @@
 package org.assembleapp.activismapp;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
-import org.assembleapp.activismapp.dummy.DummyContent;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -36,12 +33,12 @@ import java.util.Set;
  * with a GridView.
  * <p/>
  */
-public class CauseListFragment extends Fragment implements AbsListView.OnItemClickListener {
+public class CauseListFragment extends Fragment implements ListView.OnItemClickListener {
 
     /**
      * The fragment's ListView/GridView.
      */
-    private AbsListView mListView;
+    private ListView mListView;
 
     /**
      * The Adapter which will be used to populate the ListView/GridView with
@@ -83,25 +80,17 @@ public class CauseListFragment extends Fragment implements AbsListView.OnItemCli
         return ret;
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_cause, container, false);
 
         // Set the adapter
-        mListView = (AbsListView) view.findViewById(android.R.id.list);
+        mListView = (ListView) view.findViewById(android.R.id.list);
         ((AdapterView<ListAdapter>) mListView).setAdapter(mAdapter);
 
-        // Set OnItemClickListener so we can be notified on item clicks
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CauseListEntry cause = (CauseListEntry) mAdapter.getItem(position);
-                cause.setChecked(!cause.isChecked());
-            }
-
-        });
+        mListView.setDivider(getActivity().getDrawable(R.drawable.cause_list_divider));
 
         return view;
     }
@@ -118,7 +107,7 @@ public class CauseListFragment extends Fragment implements AbsListView.OnItemCli
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(getActivity().getApplicationContext(), "foo", Toast.LENGTH_SHORT);
+        Toast.makeText(getActivity().getApplicationContext(), "should not hit this", Toast.LENGTH_SHORT);
     }
 
     /**
@@ -182,6 +171,7 @@ public class CauseListFragment extends Fragment implements AbsListView.OnItemCli
         }
 
         public void setChecked(boolean checked) {
+
             this.checked = checked;
         }
     }
@@ -197,23 +187,23 @@ public class CauseListFragment extends Fragment implements AbsListView.OnItemCli
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.cause_list_item, parent, false);
             }
-            CheckBox checkbox = (CheckBox) convertView.findViewById(R.id.cause_checkbox);
-            checkbox.setText(cause.getLabel());
-            checkbox.setChecked(cause.isChecked());
-
-            checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            convertView.setOnClickListener(new View.OnClickListener() {
 
                 @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (buttonView.isChecked()) {
-                        cause.setChecked(true);
+                public void onClick(View view) {
+                    cause.setChecked(!cause.isChecked());
+                    ImageView image = (ImageView) view.findViewById(R.id.imageView);
+                    if(cause.isChecked()) {
+                        image.setImageResource(R.drawable.check);
                     }
                     else {
-                        cause.setChecked(false);
+                        image.setImageResource(R.drawable.minus);
                     }
-
                 }
+
             });
+            TextView checkbox = (TextView) convertView.findViewById(R.id.cause_name);
+            checkbox.setText(cause.getLabel());
 
             return convertView;
         }

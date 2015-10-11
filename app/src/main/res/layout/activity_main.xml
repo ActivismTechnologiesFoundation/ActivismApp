@@ -66,6 +66,7 @@
         android:layout_below="@+id/save_data_checkbox"
         android:layout_alignLeft="@+id/save_data_checkbox"
         android:layout_alignStart="@+id/save_data_checkbox"
+        android:layout_marginTop="35dp"
         android:layout_alignRight="@+id/save_data_checkbox"
         android:layout_alignEnd="@+id/save_data_checkbox" />
 
