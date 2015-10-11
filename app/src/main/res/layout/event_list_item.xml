@@ -9,7 +9,8 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="15px"
     android:layout_marginBottom="30px"
-    android:layout_marginRight="30px">
+    android:layout_marginRight="30px"
+    android:id="@+id/summary_fragment">
 
     <TextView android:layout_width="match_parent" android:layout_height="match_parent"
         android:id="@+id/event_name"
@@ -30,12 +31,22 @@
         android:text="00000"
         android:textColor="@color/background_orange"/>
 
+
+    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
+        android:id="@+id/event_details"
+        android:layout_below="@id/event_zip"
+        android:text=""
+        android:textColor="@color/background_orange"
+        android:visibility="gone"/>
+
+
     <ImageView
         android:layout_width="100px"
         android:layout_height="100px"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:src="@drawable/expand_arrow"/>
+        android:src="@drawable/expand_arrow"
+        android:id="@+id/event_expand_contract"/>
 
 </RelativeLayout>
 

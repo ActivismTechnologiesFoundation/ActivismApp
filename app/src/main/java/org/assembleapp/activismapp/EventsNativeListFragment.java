@@ -1,7 +1,6 @@
 package org.assembleapp.activismapp;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,11 +25,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -113,27 +112,6 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
         mListView = (AbsListView) view.findViewById(android.R.id.list);
         mListView.setAdapter(mAdapter);
 
-        // Set OnItemClickListener so we can be notified on item clicks
-        mListView.setOnItemClickListener(this);
-
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Intent launchIntent = new Intent(getActivity(), EventDetailsActivity.class);
-                launchIntent.putExtra(EVENT, ((AssembleEvent) EventList.get(position)).getXml());
-                if (launchIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                    startActivity(launchIntent);
-                }
-                else {
-                    Log.e(LOG_TAG, "Error: unable to launch detail page");
-                    Log.e(LOG_TAG, "Event number: " + position);
-                    Toast.makeText(getActivity().getApplicationContext(),
-                                   "Unable to open event", Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });
         return view;
     }
 
@@ -146,9 +124,9 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
 
     public static class AssembleEvent {
         private static final String NAME = "name";
-        private static final String DESCRIPTION = "description";
         private static final String ZIPCODE = "zipcode";
         private static final String ADDRESS = "address";
+        public static final String DESCRIPTION = "description";
         JSONObject json = null;
 
         public AssembleEvent(String xml) throws JSONException {
@@ -177,6 +155,33 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
             return json.toString();
         }
 
+        public String getFormattedAddress() {
+            try {
+                JSONObject address = json.getJSONObject(ADDRESS);
+                String ret = address.getString("line1") + "\n";
+                String line2 = address.getString("line2");
+                if (line2!=null && line2.length() > 0) {
+                    ret = ret + line2 + "\n";
+                }
+                ret = ret + address.getString("city") + "," + address.getString("state") + " " + getZipcode();
+                return ret;
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return "ERROR";
+            }
+
+        }
+
+        public String getFullDescription() {
+            try {
+                String description = json.getString(DESCRIPTION) + "\n\n";
+                description += getFormattedAddress();
+                return description;
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return "ERROR";
+            }
+        }
 
         public String getName() {
             try {
@@ -185,6 +190,18 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
                 e.printStackTrace();
                 return "ERROR";
             }
+        }
+
+        public String getDateTime() {
+            try {
+                int startTime = (int) json.getDouble("starts_at");
+                Date date = new Date(startTime);
+                return date.toString();
+            } catch (JSONException e) {
+                e.printStackTrace();
+                return "ERROR";
+            }
+
         }
 
         public String getZipcode() {
@@ -332,7 +349,9 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
             super(activity, simple_list_item_1, text1, eventList);
         }
 
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(int myPosition, View convertView, ViewGroup parent) {
+
+            final int position = myPosition;
             // TODO beautify
             final AssembleEvent event = (AssembleEvent) getItem(position);
             if (convertView == null) {
@@ -344,6 +363,32 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
 
             text = (TextView) convertView.findViewById(R.id.event_zip);
             text.setText(event.getZipcode());
+
+
+            text = (TextView) convertView.findViewById(R.id.event_details);
+            text.setText(event.getFullDescription());
+
+            ((TextView) convertView.findViewById(R.id.date_time)).setText(event.getDateTime());
+
+            View expandArrow = convertView.findViewById(R.id.event_expand_contract);
+            expandArrow.setOnClickListener(new AdapterView.OnClickListener() {
+                @Override
+                public void onClick(View expandArrow) {
+                        Toast.makeText(getActivity().getApplicationContext(),
+                                "Blorg" + position, Toast.LENGTH_SHORT).show();
+                    TextView details = (TextView) ((RelativeLayout) expandArrow.getParent()).findViewById(R.id.event_details);
+
+                    if (expandArrow.getRotation() == 0) {
+                        details.setVisibility(View.VISIBLE);
+                        expandArrow.setRotation(180);
+                    }
+                    else {
+                        details.setVisibility(View.GONE);
+                        expandArrow.setRotation(0);
+                    }
+
+                }
+            });
 
 
             return convertView;
