@@ -187,6 +187,10 @@ public class CauseListFragment extends Fragment implements ListView.OnItemClickL
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.cause_list_item, parent, false);
             }
+            if(cause.isChecked()) {
+                ImageView image = (ImageView) convertView.findViewById(R.id.imageView);
+                image.setImageResource(R.drawable.check);
+            }
             convertView.setOnClickListener(new View.OnClickListener() {
 
                 @Override

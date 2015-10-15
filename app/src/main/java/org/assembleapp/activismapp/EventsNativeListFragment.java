@@ -194,8 +194,9 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
 
         public String getDateTime() {
             try {
+                // TODO make this work
                 int startTime = (int) json.getDouble("starts_at");
-                Date date = new Date(startTime);
+                Date date = new Date(startTime*1000L); // convert from unix time to epoch time
                 return date.toString();
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -214,12 +215,10 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
             }
         }
 
-        public URL getUrl() {
+        public String getUrl() {
             try {
-                return new URL(json.getString("url"));
+                return json.getString("url");
             } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
             return null;
@@ -368,15 +367,16 @@ public class EventsNativeListFragment extends Fragment implements AbsListView.On
             text = (TextView) convertView.findViewById(R.id.event_details);
             text.setText(event.getFullDescription());
 
+            text = (TextView) convertView.findViewById(R.id.more_info);
+            text.setText(event.getUrl());
+
             ((TextView) convertView.findViewById(R.id.date_time)).setText(event.getDateTime());
 
             View expandArrow = convertView.findViewById(R.id.event_expand_contract);
             expandArrow.setOnClickListener(new AdapterView.OnClickListener() {
                 @Override
                 public void onClick(View expandArrow) {
-                        Toast.makeText(getActivity().getApplicationContext(),
-                                "Blorg" + position, Toast.LENGTH_SHORT).show();
-                    TextView details = (TextView) ((RelativeLayout) expandArrow.getParent()).findViewById(R.id.event_details);
+                    RelativeLayout details = (RelativeLayout) ((RelativeLayout) expandArrow.getParent()).findViewById(R.id.details_container);
 
                     if (expandArrow.getRotation() == 0) {
                         details.setVisibility(View.VISIBLE);
