@@ -1,6 +1,7 @@
 package org.assembleapp.activismapp;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -46,10 +47,15 @@ public class EventListActivity extends ActionBarActivity  {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            return launchActionSettings();
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    protected boolean launchActionSettings() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+        return true;
+    }
 }
